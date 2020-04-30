@@ -26,8 +26,8 @@ export class ProductShellComponent implements OnInit {
 
     this.products$ = this.store.pipe(select(fromProduct.getProducts));
     this.errorMessage$ = this.store.pipe(select(fromProduct.getError))
-    this.store.pipe(select(fromProduct.getCurrentProduct))
-    this.store.pipe(select(fromProduct.getShowProductCode))
+    this.selectedProduct$ = this.store.pipe(select(fromProduct.getCurrentProduct))
+    this.displayCode$ = this.store.pipe(select(fromProduct.getShowProductCode))
   }
 
   checkChanged(value: boolean): void {

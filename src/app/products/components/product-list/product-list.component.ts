@@ -15,7 +15,6 @@ export class ProductListComponent {
   @Input() displayCode: boolean;
   @Input() products: Product[];
   @Input() selectedProduct: Product;
-
   @Output() checked = new EventEmitter<boolean>();
   @Output() initializeNewProduct = new EventEmitter<void>();
   @Output() selected = new EventEmitter<Product>();
