@@ -7,7 +7,8 @@ import { ProductActions, ProductActionTypes } from './product.actions';
 const initialState: ProductState = {
   showProductCode: true,
   currentProduct: null,
-  products: []
+  products: [],
+  error: ''
 }
 
 //Reducers
@@ -45,7 +46,13 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
     case ProductActionTypes.LoadSuccess:
       return {
         ...state,
-        products: action.payload
+        products: action.payload,
+        error: ''
+      }
+    case ProductActionTypes.LoadFail:
+      return {
+        ...state,
+        error: action.payload
       }
     default:
       return state;
@@ -57,6 +64,7 @@ export interface ProductState {
   showProductCode: boolean;
   currentProduct: Product;
   products: Product[];
+  error: string;
 }
 
 export interface State extends fromRoot.State {
@@ -79,4 +87,9 @@ export const getCurrentProduct = createSelector(
 export const getProducts = createSelector(
   getProductFeatureState,
   state => state.products
+)
+
+export const getError = createSelector(
+  getProductFeatureState,
+  state => state.error
 )

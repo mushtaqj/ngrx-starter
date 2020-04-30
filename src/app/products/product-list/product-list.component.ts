@@ -15,7 +15,7 @@ import { Observable } from 'rxjs';
 })
 export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
-  errorMessage: string;
+  errorMessage$: Observable<string>;
   displayCode: boolean;
   products$: Observable<Product[]>;
 
@@ -29,6 +29,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     this.store.dispatch(new productActions.Load())
     this.products$ = this.store.pipe(select(fromProduct.getProducts));
+    this.errorMessage$ = this.store.pipe(select(fromProduct.getError))
 
     this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(currentProduct => {
       this.selectedProduct = currentProduct;
