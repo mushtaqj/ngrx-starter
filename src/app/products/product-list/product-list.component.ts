@@ -30,14 +30,15 @@ export class ProductListComponent implements OnInit, OnDestroy {
               private readonly store: Store<fromProduct.State>) { }
 
   ngOnInit(): void {
-    this.sub = this.productService.selectedProductChanges$.subscribe(
-      selectedProduct => this.selectedProduct = selectedProduct
-    );
 
     this.productService.getProducts().subscribe({
       next: (products: Product[]) => this.products = products,
       error: (err: any) => this.errorMessage = err.error
     });
+
+    this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(currentProduct => {
+      this.selectedProduct = currentProduct;
+    })
 
     this.store.pipe(select(fromProduct.getShowProductCode)).subscribe(showProductCode =>
       this.displayCode = showProductCode
@@ -57,7 +58,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   productSelected(product: Product): void {
-    this.productService.changeSelectedProduct(product);
+   this.store.dispatch(new productActions.SetCurrentProduct(product));
   }
 
 }

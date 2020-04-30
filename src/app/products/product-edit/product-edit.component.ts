@@ -7,6 +7,9 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
+import { Store } from '@ngrx/store';
+import * as fromProduct from '../state/product.reducer'
+
 
 @Component({
   selector: 'pm-product-edit',
@@ -23,11 +26,12 @@ export class ProductEditComponent implements OnInit, OnDestroy {
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
-  private validationMessages: { [key: string]: { [key: string]: string } };
+  private readonly validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
 
-  constructor(private fb: FormBuilder,
-              private productService: ProductService) {
+  constructor(private readonly fb: FormBuilder,
+              private readonly productService: ProductService,
+              private readonly store: Store<fromProduct.State>) {
 
     // Defines all of the validation messages for the form.
     // These could instead be retrieved from a file or database.
@@ -54,17 +58,14 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     // Define the form group
     this.productForm = this.fb.group({
       productName: ['', [Validators.required,
-                         Validators.minLength(3),
-                         Validators.maxLength(50)]],
+        Validators.minLength(3),
+        Validators.maxLength(50)]],
       productCode: ['', Validators.required],
       starRating: ['', NumberValidators.range(1, 5)],
       description: ''
     });
 
-    // Watch for changes to the currently selected product
-    this.sub = this.productService.selectedProductChanges$.subscribe(
-      selectedProduct => this.displayProduct(selectedProduct)
-    );
+    this.store.select(fromProduct.getCurrentProduct).subscribe(currentProduct => this.displayProduct(currentProduct))
 
     // Watch for value changes
     this.productForm.valueChanges.subscribe(
