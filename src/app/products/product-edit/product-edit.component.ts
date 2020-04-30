@@ -6,9 +6,9 @@ import { ProductService } from '../product.service';
 import { GenericValidator } from '../../shared/generic-validator';
 import { NumberValidators } from '../../shared/number.validator';
 import { Store } from '@ngrx/store';
-import * as fromProduct from '../state/product.reducer'
+import * as fromProduct from '../state/'
 import * as productActions from '../state/product.actions';
-import { takeUntil, takeWhile } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 
 
 @Component({

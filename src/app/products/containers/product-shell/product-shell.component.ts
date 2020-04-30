@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import * as productActions from '../../state/product.actions';
 import { select, Store } from '@ngrx/store';
-import * as fromProduct from '../../state/product.reducer';
+import * as fromProduct from '../../state';
 import { ProductService } from '../../product.service';
 import { Observable } from 'rxjs';
 import { Product } from '../../product';
