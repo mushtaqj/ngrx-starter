@@ -22,8 +22,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   productForm: FormGroup;
 
   product: Product | null;
-  sub: Subscription;
-
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
   private readonly validationMessages: { [key: string]: { [key: string]: string } };
@@ -74,7 +72,6 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 
   // Also validate on blur
