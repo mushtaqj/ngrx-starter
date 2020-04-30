@@ -1,46 +1,32 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
-import { Product } from '../product';
-import { ProductService } from '../product.service';
+import * as productActions from '../../state/product.actions';
 import { select, Store } from '@ngrx/store';
-import * as fromProduct from '../state/product.reducer';
-import * as productActions from '../state/product.actions';
+import * as fromProduct from '../../state/product.reducer';
+import { ProductService } from '../../product.service';
 import { Observable } from 'rxjs';
+import { Product } from '../../product';
 
 
 @Component({
-  selector: 'pm-product-list',
-  templateUrl: './product-list.component.html',
-  styleUrls: ['./product-list.component.css']
+  templateUrl: './product-shell.component.html'
 })
-export class ProductListComponent implements OnInit, OnDestroy {
-  pageTitle = 'Products';
-  errorMessage$: Observable<string>;
-  displayCode: boolean;
-  products$: Observable<Product[]>;
+export class ProductShellComponent implements OnInit {
 
-  // Used to highlight the selected product in the list
-  selectedProduct: Product | null;
+  errorMessage$: Observable<string>;
+  displayCode$: Observable<boolean>;
+  products$: Observable<Product[]>;
+  selectedProduct$: Observable<Product>;
 
   constructor(private readonly productService: ProductService,
               private readonly store: Store<fromProduct.State>) { }
 
   ngOnInit(): void {
-
     this.store.dispatch(new productActions.Load())
+
     this.products$ = this.store.pipe(select(fromProduct.getProducts));
     this.errorMessage$ = this.store.pipe(select(fromProduct.getError))
-
-    this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(currentProduct => {
-      this.selectedProduct = currentProduct;
-    })
-
-    this.store.pipe(select(fromProduct.getShowProductCode)).subscribe(showProductCode =>
-      this.displayCode = showProductCode
-    );
-  }
-
-  ngOnDestroy(): void {
+    this.store.pipe(select(fromProduct.getCurrentProduct))
+    this.store.pipe(select(fromProduct.getShowProductCode))
   }
 
   checkChanged(value: boolean): void {
@@ -54,5 +40,4 @@ export class ProductListComponent implements OnInit, OnDestroy {
   productSelected(product: Product): void {
     this.store.dispatch(new productActions.SetCurrentProduct(product));
   }
-
 }
