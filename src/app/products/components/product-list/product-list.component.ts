@@ -1,11 +1,6 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { Product } from '../../product';
-import { ProductService } from '../../product.service';
-import { select, Store } from '@ngrx/store';
-import * as fromProduct from '../../state/product.reducer';
-import * as productActions from '../../state/product.actions';
-import { Observable } from 'rxjs';
 
 
 @Component({
