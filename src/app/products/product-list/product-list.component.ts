@@ -1,12 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-
-import { Subscription } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { select, Store } from '@ngrx/store';
 import * as fromProduct from '../state/product.reducer';
 import * as productActions from '../state/product.actions';
+import { Observable } from 'rxjs';
 
 
 @Component({
@@ -17,10 +16,8 @@ import * as productActions from '../state/product.actions';
 export class ProductListComponent implements OnInit, OnDestroy {
   pageTitle = 'Products';
   errorMessage: string;
-
   displayCode: boolean;
-
-  products: Product[];
+  products$: Observable<Product[]>;
 
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
@@ -30,10 +27,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: (err: any) => this.errorMessage = err.error
-    });
+    this.store.dispatch(new productActions.Load())
+    this.products$ = this.store.pipe(select(fromProduct.getProducts));
 
     this.store.pipe(select(fromProduct.getCurrentProduct)).subscribe(currentProduct => {
       this.selectedProduct = currentProduct;
@@ -56,7 +51,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   }
 
   productSelected(product: Product): void {
-   this.store.dispatch(new productActions.SetCurrentProduct(product));
+    this.store.dispatch(new productActions.SetCurrentProduct(product));
   }
 
 }
