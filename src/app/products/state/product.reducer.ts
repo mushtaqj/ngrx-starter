@@ -64,6 +64,34 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         ...state,
         error: action.payload
       }
+    case ProductActionTypes.CreateProductSuccess:
+      const createdProduct: Product = action.payload;
+      const createdProducts = state.products.concat([createdProduct]);
+      return {
+        ...state,
+        products: createdProducts,
+        currentProductId: createdProduct.id,
+        error: ''
+      }
+    case ProductActionTypes.CreateProductFail:
+      return {
+        ...state,
+        error: action.payload
+      }
+    case ProductActionTypes.DeleteProductSuccess:
+      const deletedProductId: number = action.payload;
+      const deletedProducts = state.products.filter(product => product.id !== deletedProductId)
+      return {
+        ...state,
+        products: deletedProducts,
+        currentProductId: null,
+        error: ''
+      }
+    case ProductActionTypes.DeleteProductFail:
+      return {
+        ...state,
+        error: action.payload
+      }
     default:
       return state;
   }
@@ -100,7 +128,7 @@ export const getCurrentProduct = createSelector(
   (state, currentProductId) => {
     if (currentProductId === 0) {
       return {
-        id: 0,
+        id: null,
         productName: '',
         productCode: 'New',
         description: '',

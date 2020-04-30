@@ -18,15 +18,11 @@ export class ProductService {
   getProducts(): Observable<Product[]> {
 
     return this.http.get<Product[]>(this.productsUrl)
-      .pipe(
-        tap(data => console.log(JSON.stringify(data))),
-        catchError(this.handleError)
-      );
+      .pipe(catchError(this.handleError));
   }
 
   createProduct(product: Product): Observable<Product> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    product.id = null;
     return this.http.post<Product>(this.productsUrl, product, { headers })
       .pipe(
         tap(data => console.log('createProduct: ' + JSON.stringify(data))),
