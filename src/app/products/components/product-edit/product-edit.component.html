@@ -9,13 +9,13 @@
           <label class="col-md-3 col-form-label" for="productNameId">Product Name</label>
 
           <div class="col-md-9">
-            <input [ngClass]="{'is-invalid': displayMessage.productName }" 
-                   class="form-control" 
-                   id="productNameId" 
-                   type="text" 
-                   placeholder="Name (required)" 
-                   formControlName="productName" 
-                   (blur)="blur()" />
+            <input [ngClass]="{'is-invalid': displayMessage.productName }"
+                   class="form-control"
+                   id="productNameId"
+                   type="text"
+                   placeholder="Name (required)"
+                   formControlName="productName"
+                   (blur)="blur()"/>
             <span class="invalid-feedback" *ngIf="displayMessage.productName">
               {{displayMessage.productName}}
             </span>
@@ -26,13 +26,13 @@
           <label class="col-md-3 col-form-label" for="productCodeId">Product Code</label>
 
           <div class="col-md-9">
-            <input [ngClass]="{'is-invalid': displayMessage.productCode}" 
+            <input [ngClass]="{'is-invalid': displayMessage.productCode}"
                    class="form-control"
                    id="productCodeId"
                    type="text"
                    placeholder="Code (required)"
                    formControlName="productCode"
-                   (blur)="blur()" />
+                   (blur)="blur()"/>
             <span class="invalid-feedback" *ngIf="displayMessage.productCode">
               {{displayMessage.productCode}}
             </span>
@@ -44,11 +44,11 @@
 
           <div class="col-md-9">
             <input [ngClass]="{'is-invalid': displayMessage.starRating}"
-                   class="form-control" 
-                   id="starRatingId" 
-                   type="text" 
-                   placeholder="Rating" 
-                   formControlName="starRating" />
+                   class="form-control"
+                   id="starRatingId"
+                   type="text"
+                   placeholder="Rating"
+                   formControlName="starRating"/>
             <span class="invalid-feedback" *ngIf="displayMessage.starRating">
               {{displayMessage.starRating}}
             </span>
@@ -60,10 +60,10 @@
 
           <div class="col-md-9">
             <textarea [ngClass]="{'is-invalid': displayMessage.description}"
-                      class="form-control" 
-                      id="descriptionId" 
-                      placeholder="Description" 
-                      rows=3 
+                      class="form-control"
+                      id="descriptionId"
+                      placeholder="Description"
+                      rows=3
                       formControlName="description">
             </textarea>
             <span class="invalid-feedback" *ngIf="displayMessage.description">
@@ -75,7 +75,8 @@
         <div class="form-group">
           <div class="col-md-10 col-md-offset-2">
             <span>
-              <button class="btn btn-primary" type="submit" style="width:80px;margin-right:10px" [disabled]="!productForm.valid || !productForm.dirty">
+              <button class="btn btn-primary" type="submit" style="width:80px;margin-right:10px"
+                      [disabled]="!productForm.valid || !productForm.dirty">
                 Save
               </button>
             </span>

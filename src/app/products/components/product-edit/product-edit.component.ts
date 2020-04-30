@@ -1,14 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { Product } from '../product';
-import { ProductService } from '../product.service';
-import { GenericValidator } from '../../shared/generic-validator';
-import { NumberValidators } from '../../shared/number.validator';
-import { Store } from '@ngrx/store';
-import * as fromProduct from '../state/'
-import * as productActions from '../state/product.actions';
-import { takeWhile } from 'rxjs/operators';
+import { Product } from '../../product';
+import { GenericValidator } from '../../../shared/generic-validator';
+import { NumberValidators } from '../../../shared/number.validator';
 
 
 @Component({
@@ -16,22 +11,23 @@ import { takeWhile } from 'rxjs/operators';
   templateUrl: './product-edit.component.html',
   styleUrls: ['./product-edit.component.css']
 })
-export class ProductEditComponent implements OnInit, OnDestroy {
+export class ProductEditComponent implements OnInit, OnChanges  {
   pageTitle = 'Product Edit';
-  errorMessage = '';
-  productForm: FormGroup;
+  @Input() errorMessage;
+  @Input() selectedProduct: Product;
+  @Output() delete = new EventEmitter<number>();
+  @Output() create = new EventEmitter<Product>();
+  @Output() update = new EventEmitter<Product>();
+  @Output() clearCurrent = new EventEmitter();
 
-  product: Product | null;
-  // Use with the generic validation message class
+  productForm: FormGroup;
   displayMessage: { [key: string]: string } = {};
+  product: Product | null;
+
   private readonly validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
-  private componentActive = true;
 
-  constructor(private readonly fb: FormBuilder,
-              private readonly productService: ProductService,
-              private readonly store: Store<fromProduct.State>) {
-
+  constructor(private readonly fb: FormBuilder) {
     // Defines all of the validation messages for the form.
     // These could instead be retrieved from a file or database.
     this.validationMessages = {
@@ -64,17 +60,19 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       description: ''
     });
 
-    this.store.select(fromProduct.getCurrentProduct, takeWhile(() => this.componentActive))
-      .subscribe(currentProduct => this.displayProduct(currentProduct))
-
     // Watch for value changes
     this.productForm.valueChanges.subscribe(
       value => this.displayMessage = this.genericValidator.processMessages(this.productForm)
     );
   }
 
-  ngOnDestroy(): void {
-    this.componentActive = false;
+  ngOnChanges(changes: SimpleChanges): void {
+
+    // patch form with value from the store
+    if (changes.selectedProduct) {
+      const product: any = changes.selectedProduct.currentValue as Product;
+      this.displayProduct(product);
+    }
   }
 
   // Also validate on blur
@@ -117,11 +115,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   deleteProduct(): void {
     if (this.product && this.product.id) {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
-        this.store.dispatch(new productActions.DeleteProduct(this.product.id))
+        this.delete.emit(this.product.id);
       }
     } else {
       // No need to delete, it was never saved
-      this.store.dispatch(new productActions.ClearCurrentProduct())
+      this.clearCurrent.emit();
     }
   }
 
@@ -131,12 +129,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         // Copy over all of the original product properties
         // Then copy over the values from the form
         // This ensures values not on the form, such as the Id, are retained
-        const p = { ...this.product, ...this.productForm.value };
-
+        const p = { ...this.selectedProduct, ...this.productForm.value };
         if (p.id === null) {
-          this.store.dispatch(new productActions.CreateProduct(p));
+          this.create.emit(p);
         } else {
-          this.store.dispatch(new productActions.UpdateProduct(p))
+          this.update.emit(p);
         }
       }
     } else {
