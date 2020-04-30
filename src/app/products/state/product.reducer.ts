@@ -70,12 +70,10 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         error: action.payload
       }
     case ProductActionTypes.CreateProductSuccess:
-      const createdProduct: Product = action.payload;
-      const createdProducts = state.products.concat([createdProduct]);
       return {
         ...state,
-        products: createdProducts,
-        currentProductId: createdProduct.id,
+        products: [...state.products, action.payload],
+        currentProductId: action.payload.id,
         error: ''
       }
     case ProductActionTypes.CreateProductFail:
@@ -84,11 +82,9 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         error: action.payload
       }
     case ProductActionTypes.DeleteProductSuccess:
-      const deletedProductId: number = action.payload;
-      const deletedProducts = state.products.filter(product => product.id !== deletedProductId)
       return {
         ...state,
-        products: deletedProducts,
+        products: state.products.filter(product => product.id !== action.payload),
         currentProductId: null,
         error: ''
       }
@@ -97,5 +93,7 @@ export function reducer(state = initialState, action: ProductActions): ProductSt
         ...state,
         error: action.payload
       }
+    default:
+      return state;
   }
 }
