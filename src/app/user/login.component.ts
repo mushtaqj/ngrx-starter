@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { AuthService } from './auth.service';
 import { select, Store } from '@ngrx/store';
 import * as fromRoot from '../state/app.state'
-import { getMaskUserName } from './state/user.reducer';
+import { getMaskUserName } from './state/';
 
 
 @Component({

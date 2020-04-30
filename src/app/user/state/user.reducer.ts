@@ -1,6 +1,10 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 
 
+export interface UserState {
+  maskUsername: boolean;
+}
+
 const initialState: UserState = {
   maskUsername: false
 }
@@ -16,11 +20,3 @@ export function reducer(state = initialState, action): UserState {
       return state;
   }
 }
-
-export interface UserState {
-  maskUsername: boolean;
-}
-
-const getUserFeature = createFeatureSelector<UserState>('user');
-
-export const getMaskUserName = createSelector(getUserFeature, state => state.maskUsername);
