@@ -8,6 +8,7 @@ import { NumberValidators } from '../../shared/number.validator';
 import { Store } from '@ngrx/store';
 import * as fromProduct from '../state/product.reducer'
 import * as productActions from '../state/product.actions';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   displayMessage: { [key: string]: string } = {};
   private readonly validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
+  private componentActive = true;
 
   constructor(private readonly fb: FormBuilder,
               private readonly productService: ProductService,
@@ -62,7 +64,8 @@ export class ProductEditComponent implements OnInit, OnDestroy {
       description: ''
     });
 
-    this.store.select(fromProduct.getCurrentProduct).subscribe(currentProduct => this.displayProduct(currentProduct))
+    this.store.select(fromProduct.getCurrentProduct, takeWhile(() => this.componentActive))
+      .subscribe(currentProduct => this.displayProduct(currentProduct))
 
     // Watch for value changes
     this.productForm.valueChanges.subscribe(
@@ -71,6 +74,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.componentActive = false;
   }
 
   // Also validate on blur
@@ -138,10 +142,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
             error: err => this.errorMessage = err.error
           });
         } else {
-          this.productService.updateProduct(p).subscribe({
-            next: product => this.store.dispatch(new productActions.SetCurrentProduct(product)),
-            error: err => this.errorMessage = err.error
-          });
+          this.store.dispatch(new productActions.UpdateProduct(p))
+          //   .subscribe({
+          //   next: product => this.store.dispatch(new productActions.SetCurrentProduct(product)),
+          //   error: err => this.errorMessage = err.error
+          // });
         }
       }
     } else {
